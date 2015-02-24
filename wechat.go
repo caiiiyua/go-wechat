@@ -29,8 +29,6 @@ func validate(w http.ResponseWriter, r *http.Request) bool {
 		log.Fatalln("Reuqest is not a valid request from Wechat!")
 		return false
 	}
-	fmt.Printf("hello wechat! request[%s, %s, %s, %s]", signature, timestamp, nonce,
-		echostr)
 	fmt.Fprintf(w, echostr)
 	log.Println("Validate request from Wechat successfully!")
 	return true

@@ -1,10 +1,24 @@
 package main
 
 import (
+	"crypto/sha1"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"sort"
+	"strings"
 )
+
+const token string = "nehe"
+
+func makeSignature(t string, ts string, nonce string) string {
+	s1 := []string{t, ts, nonce}
+	sort.Strings(s1)
+	h := sha1.New()
+	io.WriteString(h, strings.Join(s1, ""))
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
 
 func wechatHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
@@ -12,8 +26,13 @@ func wechatHandler(w http.ResponseWriter, r *http.Request) {
 	timestamp := r.Form.Get("timestamp")
 	nonce := r.Form.Get("nonce")
 	echostr := r.Form.Get("echostr")
+	if signature != makeSignature(token, timestamp, nonce) {
+		log.Fatalln("Reuqest is not a valid request from Wechat!")
+	}
 	fmt.Printf("hello wechat! request[%s, %s, %s, %s]", signature, timestamp, nonce,
 		echostr)
+	fmt.Fprintf(w, echostr)
+	log.Println("Validate request from Wechat successfully!")
 }
 
 func main() {

@@ -20,19 +20,32 @@ func makeSignature(t string, ts string, nonce string) string {
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-func wechatHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
+func validate(w http.ResponseWriter, r *http.Request) bool {
 	signature := r.Form.Get("signature")
 	timestamp := r.Form.Get("timestamp")
 	nonce := r.Form.Get("nonce")
 	echostr := r.Form.Get("echostr")
 	if signature != makeSignature(token, timestamp, nonce) {
 		log.Fatalln("Reuqest is not a valid request from Wechat!")
+		return false
 	}
 	fmt.Printf("hello wechat! request[%s, %s, %s, %s]", signature, timestamp, nonce,
 		echostr)
 	fmt.Fprintf(w, echostr)
 	log.Println("Validate request from Wechat successfully!")
+	return true
+}
+
+func wechatHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	echostr := r.Form.Get("echostr")
+	if len(echostr) > 0 {
+		if !validate(w, r) {
+			log.Fatalln("validate failed")
+		}
+	}
+	fmt.Fprintf(w, "default handler")
+	fmt.Println("default handler")
 }
 
 func main() {

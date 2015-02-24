@@ -12,7 +12,7 @@ func wechatHandler(w http.ResponseWriter, r *http.Request) {
 	timestamp := r.Form.Get("timestamp")
 	nonce := r.Form.Get("nonce")
 	echostr := r.Form.Get("echostr")
-	fmt.Fprintf(w, "hello wechat! request[%s, %s, %s, %s]", signature, timestamp, nonce,
+	fmt.Printf("hello wechat! request[%s, %s, %s, %s]", signature, timestamp, nonce,
 		echostr)
 }
 

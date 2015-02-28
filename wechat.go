@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"sort"
@@ -42,21 +43,37 @@ func respBuilder(category string) string {
 	return "test"
 }
 
+// getMsgHandler is for "GET" request of http
+func getMsgHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
 // postMsgHandler is for "POST" request of http
 func postMsgHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// messageHandler is handling all of messages from wechat
-func messageHandler(w http.ResponseWriter, r *http.Request) {
+// textMsgHandler is for "Text" messages from wechat
+func textMsgHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
+	case "GET":
+		fmt.Println("GET text request", r)
+		getMsgHandler(w, r)
 	case "POST":
-		fmt.Println("POST request", r)
+		fmt.Println("POST text request", r)
 		postMsgHandler(w, r)
 	default:
-		fmt.Println("default message handler")
+		fmt.Println("default text message handler")
 	}
+}
 
+// messageHandler is handling all of messages from wechat
+func messageHandler(w http.ResponseWriter, r *http.Request) {
+	request, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Fprintln(w, err)
+	}
+	fmt.Println("Message request", string(request))
 }
 
 func wechatHandler(w http.ResponseWriter, r *http.Request) {

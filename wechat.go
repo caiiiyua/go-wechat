@@ -28,7 +28,7 @@ func validate(w http.ResponseWriter, r *http.Request) bool {
 	nonce := r.Form.Get("nonce")
 	echostr := r.Form.Get("echostr")
 	if signature != makeSignature(token, timestamp, nonce) {
-		log.Fatalln("Reuqest is not a valid request from Wechat!")
+		log.Println("Reuqest is not a valid request from Wechat!")
 		return false
 	}
 	if len(echostr) > 0 {

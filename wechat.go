@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/sha1"
+	"encoding/xml"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -9,11 +10,22 @@ import (
 	"net/http"
 	"sort"
 	"strings"
+	"time"
 )
 
 const token string = "nehe"
 const appid string = "wxe039839fbc011f6d"
 const appsecret string = "929194a70c73eed9f8bec14528a2b8c2"
+
+// TextMsg Text Message struct
+type TextMsg struct {
+	ToUserName   string
+	FromUserName string
+	MsgType      string
+	MsgId        string
+	Content      string
+	CreateTime   time.Duration
+}
 
 func makeSignature(t string, ts string, nonce string) string {
 	s1 := []string{t, ts, nonce}
@@ -54,26 +66,38 @@ func postMsgHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // textMsgHandler is for "Text" messages from wechat
-func textMsgHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "GET":
-		fmt.Println("GET text request", r)
-		getMsgHandler(w, r)
-	case "POST":
-		fmt.Println("POST text request", r)
-		postMsgHandler(w, r)
-	default:
-		fmt.Println("default text message handler")
-	}
+func textMsgHandler(w http.ResponseWriter, r *http.Request, msg *TextMsg) {
+	fmt.Println(r.Method, " request with text:", msg.Content, " when: ", msg.CreateTime)
+	// switch r.Method {
+	// case "GET":
+	// 	fmt.Println("GET text request", r)
+	// 	getMsgHandler(w, r)
+	// case "POST":
+	// 	fmt.Println("text:", msg.Content, " when: ", msg.CreateTime)
+	// 	postMsgHandler(w, r)
+	// default:
+	// 	fmt.Println("default text message handler")
+	// }
 }
 
 // messageHandler is handling all of messages from wechat
 func messageHandler(w http.ResponseWriter, r *http.Request) {
-	request, err := ioutil.ReadAll(r.Body)
+	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Fprintln(w, err)
 	}
-	fmt.Println("Message request", string(request))
+	fmt.Println("Message data", string(data))
+	request := &TextMsg{}
+	err = xml.Unmarshal(data, request)
+	if err != nil {
+		fmt.Fprintln(w, err)
+	}
+	fmt.Println("Message request", request)
+	switch request.MsgType {
+	case "text":
+		textMsgHandler(w, r, request)
+	}
+
 }
 
 func wechatHandler(w http.ResponseWriter, r *http.Request) {

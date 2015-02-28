@@ -63,7 +63,8 @@ func wechatHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	if !validate(w, r) {
-		log.Fatalln("validate failed")
+		fmt.Fprintf(w, "404 not found message!")
+		return
 	}
 	fmt.Fprintf(w, "default handler")
 	fmt.Println("default handler")

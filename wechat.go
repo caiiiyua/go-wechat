@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/caiiiyua/wechat/mp/message/response"
 	"github.com/chanxuehong/wechat/mp"
 	"github.com/chanxuehong/wechat/mp/message/request"
+	"github.com/chanxuehong/wechat/mp/message/response"
 	"github.com/chanxuehong/wechat/util"
 )
 

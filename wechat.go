@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 
+	"github.com/caiiiyua/wechat/mp/message/response"
 	"github.com/chanxuehong/wechat/mp"
 	"github.com/chanxuehong/wechat/mp/message/request"
 	"github.com/chanxuehong/wechat/util"
@@ -16,11 +19,15 @@ const wechatid string = "gh_059a1b6286af"
 const aesKeyOrigin = "KI5r9bVLmV5JiWiVlLiAUFpvCZHEG0wxxEp2lnzNeQT"
 
 func textMessageHandler(w http.ResponseWriter, r *mp.Request) {
-
+	text := request.GetText(r.MixedMsg)
+	resp := response.NewText(text.ToUserName, text.FromUserName, text.CreateTime,
+		text.Content)
+	mp.WriteRawResponse(w, r, resp)
 }
 
 func invalideRequestHandler(w http.ResponseWriter, r *http.Request, err error) {
-
+	io.WriteString(w, err.Error())
+	fmt.Println("invalide request")
 }
 
 func main() {

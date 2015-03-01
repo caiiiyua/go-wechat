@@ -16,6 +16,7 @@ import (
 const token string = "nehe"
 const appid string = "wxe039839fbc011f6d"
 const appsecret string = "929194a70c73eed9f8bec14528a2b8c2"
+const originid string = "gh_059a1b6286af"
 
 // TextMsg Text Message struct
 type TextMsg struct {

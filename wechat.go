@@ -20,7 +20,7 @@ const aesKeyOrigin = "KI5r9bVLmV5JiWiVlLiAUFpvCZHEG0wxxEp2lnzNeQT"
 
 func textMessageHandler(w http.ResponseWriter, r *mp.Request) {
 	text := request.GetText(r.MixedMsg)
-	resp := response.NewText(text.ToUserName, text.FromUserName, text.CreateTime,
+	resp := response.NewText(text.FromUserName, text.ToUserName, text.CreateTime,
 		text.Content)
 	mp.WriteRawResponse(w, r, resp)
 }

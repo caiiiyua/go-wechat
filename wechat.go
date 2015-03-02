@@ -22,7 +22,7 @@ func textMessageHandler(w http.ResponseWriter, r *mp.Request) {
 	text := request.GetText(r.MixedMsg)
 	// resp := response.NewText(text.FromUserName, text.ToUserName, text.CreateTime,
 	// text.Content)
-	articles := make([]response.Article, 3)
+	articles := make([]response.Article, 1)
 	about := response.Article{
 		"我的博客",
 		"点击阅读博客文章",

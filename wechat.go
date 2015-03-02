@@ -20,8 +20,17 @@ const aesKeyOrigin = "KI5r9bVLmV5JiWiVlLiAUFpvCZHEG0wxxEp2lnzNeQT"
 
 func textMessageHandler(w http.ResponseWriter, r *mp.Request) {
 	text := request.GetText(r.MixedMsg)
-	resp := response.NewText(text.FromUserName, text.ToUserName, text.CreateTime,
-		text.Content)
+	// resp := response.NewText(text.FromUserName, text.ToUserName, text.CreateTime,
+	// text.Content)
+	articles := make([]response.Article, 3)
+	about := response.Article{
+		"我的博客",
+		"点击阅读博客文章",
+		"https://mmbiz.qlogo.cn/mmbiz/kqQvK5zClJIT4InuQGaNzJHgC0Al4Kib3wNicXq1HFTboeZO0HiagteQGCdgbVM4Rnr8NKMiaricRSN8zMGRT1z91fg/0",
+		"http://www.imogu.us/"}
+	articles = append(articles, about)
+	resp := response.NewNews(text.FromUserName, text.ToUserName, text.CreateTime,
+		articles)
 	mp.WriteRawResponse(w, r, resp)
 }
 
